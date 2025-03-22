@@ -1,124 +1,54 @@
-// copied and adapted from https://raw.githubusercontent.com/MarshalX/python-libipld/main/src/lib.rs
-// Python bindings
-use pyo3::prelude::*;
-use pyo3::conversion::ToPyObject;
-use pyo3::{PyObject, Python};
 use extendr_api::prelude::*;
-use std::borrow::Cow;
-use std::collections::{HashMap};
+use std::collections::HashMap;
 use std::io::{BufReader, Cursor, Read, Seek};
-use anyhow::Result;
+use anyhow::{Result, Error};
 use iroh_car::{CarHeader, CarReader};
 use futures::{executor, stream::StreamExt};
 use ::libipld::cbor::cbor::MajorKind;
 use ::libipld::cbor::decode;
 use ::libipld::{cid::Cid, Ipld};
 
-
-#[derive(Clone, PartialEq)]
-pub enum HashMapItem {
-    Null,
-    Bool(bool),
-    Integer(i128),
-    Float(f64),
-    String(String),
-    List(Vec<HashMapItem>),
-    Map(HashMap<String, HashMapItem>),
-    Bytes(Cow<'static, [u8]>),
-}
-
-// TODO: change to R objects instead Python
-impl HashMapItem {
-    fn value(&self) -> PyObject {
-        Python::with_gil(|py| match self {
-            Self::Null => py.None(),
-            Self::Bool(b) => b.to_object(py),
-            Self::String(s) => s.to_object(py),
-            Self::Integer(i) => i.to_object(py),
-            Self::Float(f) => f.to_object(py),
-            Self::List(l) => l.to_object(py),
-            Self::Map(m) => m.to_object(py),
-            Self::Bytes(b) => b.to_object(py),
-        })
+// Convert IPLD to R objects
+fn ipld_to_robj(ipld: &Ipld) -> Robj {
+    match ipld {
+        Ipld::Null => r!(NULL),
+        Ipld::Bool(b) => r!(*b),
+        Ipld::Integer(i) => {
+            // Handle potential integer overflow
+            if *i >= i32::MIN as i128 && *i <= i32::MAX as i128 {
+                r!(*i as i32)
+            } else if *i >= i64::MIN as i128 && *i <= i64::MAX as i128 {
+                r!(*i as i64)
+            } else {
+                // Fall back to float for extremely large integers
+                r!(*i as f64)
+            }
+        },
+        Ipld::Float(f) => r!(*f),
+        Ipld::String(s) => r!(s.clone()),
+        Ipld::Bytes(b) => {
+            let bytes_vec: Vec<u8> = b.to_vec();
+            Robj::from(bytes_vec)
+        },
+        Ipld::List(l) => {
+            let vec: Vec<Robj> = l.iter().map(|item| ipld_to_robj(item)).collect();
+            List::from_values(vec).into()
+        },
+        Ipld::Map(m) => {
+            let mut names: Vec<String> = Vec::with_capacity(m.len());
+            let mut values: Vec<Robj> = Vec::with_capacity(m.len());
+            
+            for (k, v) in m {
+                names.push(k.clone());
+                values.push(ipld_to_robj(v));
+            }
+            
+            let mut r_list = List::from_values(values);
+            r_list.set_names(names).unwrap();
+            r_list.into()
+        },
+        Ipld::Link(cid) => r!(cid.to_string()),
     }
-}
-
-// TODO: change to R objects instead Python
-impl ToPyObject for HashMapItem {
-    fn to_object(&self, _: Python<'_>) -> PyObject {
-        self.value().into()
-    }
-}
-
-// TODO: change to R objects instead Python
-impl IntoPy<Py<PyAny>> for HashMapItem {
-    fn into_py(self, _: Python<'_>) -> Py<PyAny> {
-        self.value().into()
-    }
-}
-
-
-fn ipld_to_hashmap(x: Ipld) -> HashMapItem {
-    match x {
-        Ipld::Null => HashMapItem::Null,
-        Ipld::Bool(b) => HashMapItem::Bool(b),
-        Ipld::Integer(i) => HashMapItem::Integer(i),
-        Ipld::Float(f) => HashMapItem::Float(f),
-        Ipld::String(s) => HashMapItem::String(s),
-        Ipld::Bytes(b) => HashMapItem::Bytes(Cow::Owned(b)),
-        Ipld::List(l) => HashMapItem::List(l.into_iter().map(ipld_to_hashmap).collect()),
-        Ipld::Map(m) => HashMapItem::Map(
-            m.into_iter()
-                .map(|(k, v)| (k, ipld_to_hashmap(v)))
-                .collect(),
-        ),
-        Ipld::Link(cid) => HashMapItem::String(cid.to_string()),
-    }
-}
-
-fn car_header_to_hashmap(header: &CarHeader) -> HashMapItem {
-    HashMapItem::Map(
-        vec![
-            ("version".to_string(), HashMapItem::Integer(header.version() as i128)),
-            (
-                "roots".to_string(),
-                HashMapItem::List(
-                    header
-                        .roots()
-                        .iter()
-                        .map(|cid| HashMapItem::String(cid.to_string()))
-                        .collect(),
-                ),
-            ),
-        ]
-            .into_iter()
-            .collect(),
-    )
-}
-
-fn _cid_hash_to_hashmap(cid: &Cid) -> HashMapItem {
-    let hash = cid.hash();
-    HashMapItem::Map(
-        vec![
-            ("code".to_string(), HashMapItem::Integer(hash.code() as i128)),
-            ("size".to_string(), HashMapItem::Integer(hash.size() as i128)),
-            ("digest".to_string(), HashMapItem::Bytes(Cow::Owned(hash.digest().to_vec()))),
-        ]
-            .into_iter()
-            .collect(),
-    )
-}
-
-fn cid_to_hashmap(cid: &Cid) -> HashMapItem {
-    HashMapItem::Map(
-        vec![
-            ("version".to_string(), HashMapItem::Integer(cid.version() as i128)),
-            ("codec".to_string(), HashMapItem::Integer(cid.codec() as i128)),
-            ("hash".to_string(), _cid_hash_to_hashmap(cid)),
-        ]
-            .into_iter()
-            .collect(),
-    )
 }
 
 fn parse_dag_cbor_object<R: Read + Seek>(mut reader: &mut BufReader<R>) -> Result<Ipld> {
@@ -133,89 +63,164 @@ fn parse_dag_cbor_object<R: Read + Seek>(mut reader: &mut BufReader<R>) -> Resul
             if major.info() != 42 {
                 return Err(anyhow::anyhow!("non-42 tags are not supported"));
             }
-
             parse_dag_cbor_object(reader)?
         }
         MajorKind::Other => Ipld::Null,
     })
 }
 
-// TODO: change to R-exposed function instead Python
-#[pyfunction]
-fn decode_dag_cbor_multi(data: Vec<u8>) -> PyResult<Vec<HashMapItem>> {
-    let mut reader = BufReader::new(Cursor::new(data));
-
-    let mut parts = Vec::new();
-    loop {
-        let cbor = parse_dag_cbor_object(&mut reader);
-        if let Ok(cbor) = cbor {
-            parts.push(_ipld_to_python(cbor));
-        } else {
-            break;
-        }
-    }
-    Ok(parts)
-}
-
-fn _decode_dag_cbor(data: Vec<u8>) -> Result<Ipld> {
+fn decode_dag_cbor_internal(data: &[u8]) -> Result<Ipld> {
     let mut reader = BufReader::new(Cursor::new(data));
     parse_dag_cbor_object(&mut reader)
 }
 
-fn _ipld_to_python(ipld: Ipld) -> HashMapItem {
-    ipld_to_hashmap(ipld.clone())
+fn car_header_to_robj(header: &CarHeader) -> Robj {
+    let version = header.version() as i32;
+    let roots: Vec<String> = header.roots().iter().map(|cid| cid.to_string()).collect();
+    
+    let values = vec![r!(version), r!(roots)];
+    let names = vec!["version", "roots"];
+    
+    let mut result = List::from_values(values);
+    result.set_names(names).unwrap();
+    
+    let r_result = result.into_robj();
+    r_result.set_class(&["car_header"]).unwrap();
+    r_result
 }
 
+fn cid_hash_to_robj(cid: &Cid) -> Robj {
+    let hash = cid.hash();
+    
+    let values = vec![
+        r!(hash.code() as i32),
+        r!(hash.size() as i32),
+        r!(hash.digest().to_vec())
+    ];
+    let names = vec!["code", "size", "digest"];
+    
+    let mut result = List::from_values(values);
+    result.set_names(names).unwrap();
+    
+    result.into()
+}
 
-// TODO: change to R-exposed function instead Python
-#[pyfunction]
-fn decode_car(data: Vec<u8>) -> (HashMapItem, HashMap<String, HashMapItem>) {
-    let car = executor::block_on(CarReader::new(data.as_slice())).unwrap();
-    let header = car_header_to_hashmap(car.header());
-    let blocks = executor::block_on(car
-        .stream()
-        .filter_map(|block| async {
-            if let Ok((cid, bytes)) = block {
-                let mut reader = BufReader::new(Cursor::new(bytes));
+fn cid_to_robj(cid: &Cid) -> Robj {
+    let values = vec![
+        r!(cid.version() as i32),
+        r!(cid.codec() as i32),
+        cid_hash_to_robj(cid)
+    ];
+    let names = vec!["version", "codec", "hash"];
+    
+    let mut result = List::from_values(values);
+    result.set_names(names).unwrap();
+    
+    let r_result = result.into_robj();
+    r_result.set_class(&["cid"]).unwrap();
+    r_result
+}
 
-                let ipld = parse_dag_cbor_object(&mut reader);
-                if let Ok(ipld) = ipld {
-                    Some((cid.to_string(), ipld))
-                } else {
-                    None
-                }
-            } else {
-                None
-            }
-        })
-        .collect::<HashMap<String, Ipld>>());
+// R-exposed functions
 
-    let mut decoded_blocks = HashMap::new();
-    for (cid, ipld) in &blocks {
-        decoded_blocks.insert(cid.to_string(), _ipld_to_python(ipld.clone()));
+/// Decode a DAG-CBOR encoded byte vector to an R object
+/// @param data A raw vector containing DAG-CBOR encoded data
+/// @export
+#[extendr]
+fn decode_dag_cbor(data: &[u8]) -> Result<Robj, Error> {
+    match decode_dag_cbor_internal(data) {
+        Ok(ipld) => Ok(ipld_to_robj(&ipld)),
+        Err(e) => Err(e),
     }
-
-    (header, decoded_blocks)
 }
 
-
-// TODO: change to R-exposed function instead Python
-#[pyfunction]
-fn decode_dag_cbor(data: Vec<u8>) -> PyResult<HashMapItem> {
-    Ok(_ipld_to_python(_decode_dag_cbor(data)?))
+/// Decode multiple DAG-CBOR objects from a byte vector
+/// @param data A raw vector containing multiple DAG-CBOR encoded objects
+/// @export
+#[extendr]
+fn decode_dag_cbor_multi(data: &[u8]) -> Robj {
+    let mut reader = BufReader::new(Cursor::new(data));
+    let mut parts = Vec::new();
+    
+    loop {
+        let cbor = parse_dag_cbor_object(&mut reader);
+        match cbor {
+            Ok(ipld) => parts.push(ipld_to_robj(&ipld)),
+            Err(_) => break,
+        }
+    }
+    
+    List::from_values(parts).into()
 }
 
-#[pyfunction]
-fn decode_cid(data: String) -> PyResult<HashMapItem> {
-    let cid = Cid::try_from(data.as_str()).unwrap();
-    Ok(cid_to_hashmap(&cid))
+/// Decode a CID string to its components
+/// @param cid_str A string containing a CID
+/// @export
+#[extendr]
+fn decode_cid(cid_str: &str) -> Result<Robj, Error> {
+    match Cid::try_from(cid_str) {
+        Ok(cid) => Ok(cid_to_robj(&cid)),
+        Err(e) => Err(anyhow::anyhow!("Failed to decode CID: {}", e)),
+    }
 }
 
-#[pymodule]
-fn libipld(_py: Python, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(decode_cid, m)?)?;
-    m.add_function(wrap_pyfunction!(decode_car, m)?)?;
-    m.add_function(wrap_pyfunction!(decode_dag_cbor, m)?)?;
-    m.add_function(wrap_pyfunction!(decode_dag_cbor_multi, m)?)?;
-    Ok(())
+/// Decode a CAR file byte vector
+/// @param data A raw vector containing a CAR file
+/// @export
+#[extendr]
+fn decode_car(data: &[u8]) -> Result<Robj, Error> {
+    let car_res = executor::block_on(CarReader::new(data));
+    
+    match car_res {
+        Ok(car) => {
+            let header = car_header_to_robj(car.header());
+            
+            let blocks_res = executor::block_on(car
+                .stream()
+                .filter_map(|block| async {
+                    match block {
+                        Ok((cid, bytes)) => {
+                            let mut reader = BufReader::new(Cursor::new(bytes));
+                            match parse_dag_cbor_object(&mut reader) {
+                                Ok(ipld) => Some((cid.to_string(), ipld)),
+                                Err(_) => None,
+                            }
+                        },
+                        Err(_) => None,
+                    }
+                })
+                .collect::<HashMap<String, Ipld>>());
+            
+            let mut names: Vec<String> = Vec::with_capacity(blocks_res.len());
+            let mut values: Vec<Robj> = Vec::with_capacity(blocks_res.len());
+            
+            for (cid, ipld) in blocks_res {
+                names.push(cid);
+                values.push(ipld_to_robj(&ipld));
+            }
+            
+            let mut blocks_list = List::from_values(values);
+            blocks_list.set_names(names).unwrap();
+            
+            let values = vec![header, blocks_list.into_robj()];
+            let names = vec!["header", "blocks"];
+            
+            let mut result = List::from_values(values);
+            result.set_names(names).unwrap();
+            
+            let r_result = result.into_robj();
+            r_result.set_class(&["car_file"]).unwrap();
+            Ok(r_result)
+        },
+        Err(e) => Err(anyhow::anyhow!("Failed to decode CAR file: {}", e)),
+    }
+}
+
+// Macro to generate exports
+extendr_module! {
+    mod libipldr;
+    fn decode_dag_cbor;
+    fn decode_dag_cbor_multi;
+    fn decode_cid;
+    fn decode_car;
 }
