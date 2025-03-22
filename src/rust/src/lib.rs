@@ -1,3 +1,6 @@
+// copied and adapted from https://raw.githubusercontent.com/MarshalX/python-libipld/main/src/lib.rs
+
+
 use extendr_api::prelude::*;
 use std::collections::HashMap;
 use std::io::{BufReader, Cursor, Read, Seek};

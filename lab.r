@@ -85,17 +85,20 @@ ws$close()
 
 library(websocket)
 
-test <- function() {
+the <- new.env()
+the$stream <- NULL
+test_firehose_stream <- function(secs = 1) {
   ws <- websocket::WebSocket$new("wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos", autoConnect = FALSE)
   # ws$onOpen(function(event) {
   #   cat("Connection opened\n")
   # })
   ws$onMessage(function(event) {
     event <<- event
-    write(event$data, file="myfile.txt", append=TRUE)
-    dat <<- libipldr::decode_dag_cbor(event$data)
-    cat("Client got msg: ", "\n")
-    print(dat)
+    # write(event$data, file="myfile.txt", append=TRUE)
+    dat <<- libipldr::decode_dag_cbor_multi(event$data)[[2]]
+    # cat("Client got msg: ", dat[["time"]], "\n")
+    # saveRDS(dat, paste0(dat$commit, ".rds"))
+    the$stream[[dat$commit]] <- dat
   })
   # ws$onClose(function(event) {
   #   cat("Client disconnected with code ", event$code,
@@ -105,10 +108,15 @@ test <- function() {
     # cat("Client failed to connect: ", event$message, "\n")
   })
   ws$connect()
-  Sys.sleep(1)
+  Sys.sleep(secs)
   ws$close()
 }
-test()
+test_firehose_stream(10)
+commits <- the$stream
+commits2 <- lapply(commits, function(dat) {
+  dat$blocks <- libipldr::decode_dag_cbor_multi(dat$blocks)
+  dat
+})
 
 x <- readChar("myfile.txt", nchars = file.size("myfile.txt"), useBytes = TRUE)
 x |>
@@ -116,4 +124,7 @@ x |>
   charToRaw() |>
   libipldr::decode_dag_cbor()
 
+y <- lapply(list.files(pattern = "rds"), readRDS)
 
+z <- libipldr::decode_dag_cbor_multi(y[[1]]$data)
+libipldr::decode_dag_cbor_multi(z[[2]][["blocks"]])
