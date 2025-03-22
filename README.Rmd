@@ -47,3 +47,33 @@ cbor_data <- as.raw(c(
 ))
 decode_dag_cbor(cbor_data)
 ```
+
+# What is this good for?
+
+Mainly I wanted to have this to decode the firehose stream from Bluesky:
+
+```{r}
+library(httr2)
+# open connection to firehose
+firehose <- request("wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos") |>
+  req_perform_connection()
+
+# stream 5 Mb
+results_raw <- firehose |>
+  resp_stream_raw(kb = 5000)
+
+close(firehose)
+
+# decode the stream
+results <- decode_dag_cbor_multi(results_raw)
+
+# extract operations
+library(purrr)
+library(dplyr)
+events_df <- map(results, function(res) {
+  pluck(res, "ops", 1)
+}) |>
+  bind_rows()
+events_df
+```
+
