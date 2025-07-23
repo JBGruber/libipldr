@@ -39,12 +39,12 @@ fn ipld_to_robj(ipld: &Ipld) -> Robj {
         Ipld::Map(m) => {
             let mut names: Vec<String> = Vec::with_capacity(m.len());
             let mut values: Vec<Robj> = Vec::with_capacity(m.len());
-            
+
             for (k, v) in m {
                 names.push(k.clone());
                 values.push(ipld_to_robj(v));
             }
-            
+
             let mut r_list = List::from_values(values);
             r_list.set_names(names).unwrap();
             r_list.into()
@@ -79,31 +79,29 @@ fn decode_dag_cbor_internal(data: &[u8]) -> Result<Ipld> {
 fn car_header_to_robj(header: &CarHeader) -> Robj {
     let version = header.version() as i32;
     let roots: Vec<String> = header.roots().iter().map(|cid| cid.to_string()).collect();
-    
+
     let values = vec![r!(version), r!(roots)];
     let names = vec!["version", "roots"];
-    
+
     let mut result = List::from_values(values);
     result.set_names(names).unwrap();
-    
+
     let r_result = result.into_robj();
-    r_result.set_class(&["car_header"]).unwrap();
     r_result
 }
 
 fn cid_hash_to_robj(cid: &Cid) -> Robj {
     let hash = cid.hash();
-    
+
     let values = vec![
         r!(hash.code() as i32),
         r!(hash.size() as i32),
         r!(hash.digest().to_vec())
     ];
     let names = vec!["code", "size", "digest"];
-    
+
     let mut result = List::from_values(values);
-    result.set_names(names).unwrap();
-    
+
     result.into()
 }
 
@@ -114,12 +112,10 @@ fn cid_to_robj(cid: &Cid) -> Robj {
         cid_hash_to_robj(cid)
     ];
     let names = vec!["version", "codec", "hash"];
-    
+
     let mut result = List::from_values(values);
-    result.set_names(names).unwrap();
-    
+
     let r_result = result.into_robj();
-    r_result.set_class(&["cid"]).unwrap();
     r_result
 }
 
@@ -144,14 +140,14 @@ fn decode_dag_cbor_multi(data: &[u8]) -> Robj {
     let mut reader = BufReader::new(Cursor::new(data));
     let mut parts = Vec::new();
     let mut last_successful_position: u64 = 0;
-    
+
     loop {
         // Get current position before attempting to parse
         let current_position = match reader.stream_position() {
             Ok(pos) => pos,
             Err(_) => break,
         };
-        
+
         let cbor = parse_dag_cbor_object(&mut reader);
         match cbor {
             Ok(ipld) => {
@@ -169,13 +165,13 @@ fn decode_dag_cbor_multi(data: &[u8]) -> Robj {
             }
         }
     }
-    
+
     // Create the list of decoded objects
     let mut result_list = List::from_values(parts);
-    
+
     // Add the bytes_consumed attribute
     result_list.set_attrib("bytes_consumed", r!(last_successful_position as i32)).unwrap();
-    
+
     result_list.into()
 }
 
@@ -196,11 +192,11 @@ fn decode_cid(cid_str: &str) -> Result<Robj, Error> {
 #[extendr]
 fn decode_car(data: &[u8]) -> Result<Robj, Error> {
     let car_res = executor::block_on(CarReader::new(data));
-    
+
     match car_res {
         Ok(car) => {
             let header = car_header_to_robj(car.header());
-            
+
             let blocks_res = executor::block_on(car
                 .stream()
                 .filter_map(|block| async {
@@ -216,26 +212,25 @@ fn decode_car(data: &[u8]) -> Result<Robj, Error> {
                     }
                 })
                 .collect::<HashMap<String, Ipld>>());
-            
+
             let mut names: Vec<String> = Vec::with_capacity(blocks_res.len());
             let mut values: Vec<Robj> = Vec::with_capacity(blocks_res.len());
-            
+
             for (cid, ipld) in blocks_res {
                 names.push(cid);
                 values.push(ipld_to_robj(&ipld));
             }
-            
+
             let mut blocks_list = List::from_values(values);
             blocks_list.set_names(names).unwrap();
-            
+
             let values = vec![header, blocks_list.into_robj()];
             let names = vec!["header", "blocks"];
-            
+
             let mut result = List::from_values(values);
             result.set_names(names).unwrap();
-            
+
             let r_result = result.into_robj();
-            r_result.set_class(&["car_file"]).unwrap();
             Ok(r_result)
         },
         Err(e) => Err(anyhow::anyhow!("Failed to decode CAR file: {}", e)),
