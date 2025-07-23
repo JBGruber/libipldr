@@ -15,9 +15,9 @@ decode_dag_cbor(data)
 An R object representing the decoded data
 }
 \description{
-This function decodes a raw vector containing DAG-CBOR encoded data into an R object.
-DAG-CBOR is a deterministic subset of the CBOR format, used by IPFS and AtProto
-(Bluesky) for data representation.
+This function decodes a raw vector containing DAG-CBOR encoded data into an R
+object. DAG-CBOR is a deterministic subset of the CBOR format, used by IPFS
+and AtProto (Bluesky) for data representation.
 }
 \examples{
 \dontrun{

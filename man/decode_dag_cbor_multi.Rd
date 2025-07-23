@@ -15,11 +15,19 @@ decode_dag_cbor_multi(data)
 A list of R objects, each representing a decoded DAG-CBOR object
 }
 \description{
-This function decodes multiple consecutive DAG-CBOR objects from a single raw vector.
+This function decodes multiple consecutive DAG-CBOR objects from a single raw
+vector. The returned list includes a 'bytes_consumed' attribute indicating
+how many bytes from the beginning of the input were successfully processed.
+This is useful for streaming applications where you need to know where to
+continue reading.
 }
 \examples{
 \dontrun{
 # When you have multiple DAG-CBOR objects in one stream:
 results <- decode_dag_cbor_multi(raw_data)
+bytes_consumed <- attr(results, "bytes_consumed")
+
+# Remove processed bytes from buffer for streaming
+remaining_buffer <- raw_data[(bytes_consumed + 1):length(raw_data)]
 }
 }

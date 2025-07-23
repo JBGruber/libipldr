@@ -18,8 +18,6 @@ A list with CID components
 This function decodes a CID string into its components (version, codec, and hash).
 }
 \examples{
-\dontrun{
 # Decode a CID:
 cid_info <- decode_cid("bafyreib775pirw4o3rz4iwdjwi3rz7q4z5t4xjyfrwnk2yukhzo2wyr4ye")
-}
 }

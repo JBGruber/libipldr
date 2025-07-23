@@ -6,10 +6,9 @@
 # This file was created with the following call:
 #   .Call("wrap__make_libipldr_wrappers", use_symbols = TRUE, package_name = "libipldr")
 
-#' @docType package
 #' @usage NULL
 #' @useDynLib libipldr, .registration = TRUE
-NULL
+"_PACKAGE"
 
 #' Decode a DAG-CBOR encoded byte vector to an R object
 #' @param data A raw vector containing DAG-CBOR encoded data
@@ -30,6 +29,5 @@ decode_cid <- function(cid_str) .Call(wrap__decode_cid, cid_str)
 #' @param data A raw vector containing a CAR file
 #' @export
 decode_car <- function(data) .Call(wrap__decode_car, data)
-
 
 # nolint end
