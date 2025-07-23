@@ -1,9 +1,8 @@
 // copied and adapted from https://raw.githubusercontent.com/MarshalX/python-libipld/main/src/lib.rs
 
-
 use extendr_api::prelude::*;
 use std::collections::HashMap;
-use std::io::{BufReader, Cursor, Read, Seek};
+use std::io::{BufReader, Cursor, Read, Seek, SeekFrom};
 use anyhow::{Result, Error};
 use iroh_car::{CarHeader, CarReader};
 use futures::{executor, stream::StreamExt};
@@ -144,16 +143,40 @@ fn decode_dag_cbor(data: &[u8]) -> Result<Robj, Error> {
 fn decode_dag_cbor_multi(data: &[u8]) -> Robj {
     let mut reader = BufReader::new(Cursor::new(data));
     let mut parts = Vec::new();
+    let mut last_successful_position: u64 = 0;
     
     loop {
+        // Get current position before attempting to parse
+        let current_position = match reader.stream_position() {
+            Ok(pos) => pos,
+            Err(_) => break,
+        };
+        
         let cbor = parse_dag_cbor_object(&mut reader);
         match cbor {
-            Ok(ipld) => parts.push(ipld_to_robj(&ipld)),
-            Err(_) => break,
+            Ok(ipld) => {
+                parts.push(ipld_to_robj(&ipld));
+                // Update last successful position after successful parse
+                last_successful_position = match reader.stream_position() {
+                    Ok(pos) => pos,
+                    Err(_) => current_position, // fallback to current if we can't get position
+                };
+            },
+            Err(_) => {
+                // Reset to last successful position and break
+                let _ = reader.seek(SeekFrom::Start(last_successful_position));
+                break;
+            }
         }
     }
     
-    List::from_values(parts).into()
+    // Create the list of decoded objects
+    let mut result_list = List::from_values(parts);
+    
+    // Add the bytes_consumed attribute
+    result_list.set_attrib("bytes_consumed", r!(last_successful_position as i32)).unwrap();
+    
+    result_list.into()
 }
 
 /// Decode a CID string to its components
