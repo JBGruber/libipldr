@@ -6,15 +6,24 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/JBGruber/libipldr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JBGruber/libipldr/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of libipldr is to make it possible to translate DAG-CBOR
 encoded data in R. This is mostly useful for the
+[`atrrr`](https://jbgruber.github.io/atrrr/articles/Networks.html)
+package that can stream from the Bluesky firehose.
 
 ## Installation
 
-You can install the development version of libipldr from
-[GitHub](https://github.com/) with:
+You can install the development version of libipldr with:
+
+``` r
+install.packages("libipldr)
+```
+
+Or install the development version from [GitHub](https://github.com/)
+with:
 
 ``` r
 # install.packages("pak")
@@ -28,11 +37,22 @@ Decode CID:
 ``` r
 library(libipldr)
 decode_cid("bafyreig7jbijxpn4lfhvnvyuwf5u5jyhd7begxwyiqe7ingwxycjdqjjoa")
-#> Content Identifier (CID)
-#> Version: 1 
-#> Codec: 113 
-#> Hash code: 18 
-#> Hash size: 32
+#> [[1]]
+#> [1] 1
+#> 
+#> [[2]]
+#> [1] 113
+#> 
+#> [[3]]
+#> [[3]][[1]]
+#> [1] 18
+#> 
+#> [[3]][[2]]
+#> [1] 32
+#> 
+#> [[3]][[3]]
+#>  [1] df 48 50 9b bd bc 59 4f 56 d7 14 b1 7b 4e a7 07 1f c2 43 5e d8 44 09 f4 34
+#> [26] d6 be 04 91 c1 29 70
 ```
 
 Decode DAG-CBOR:
@@ -84,18 +104,18 @@ events_df <- map(results, function(res) {
 }) |>
   bind_rows()
 events_df
-#> # A tibble: 1,115 × 3
+#> # A tibble: 991 × 3
 #>    action cid                                                         path      
 #>    <chr>  <chr>                                                       <chr>     
-#>  1 create bafyreibcf7jradap3cvp6f6mettrgir6rragejycmqnathupnuokb3asyi app.bsky.…
-#>  2 create bafyreicnprlyrt6msfnihw7jibih3mp5ruratvmss3ul7a7hd7hfba5gjy app.bsky.…
-#>  3 create bafyreiaw3dpsbrbegwgphxurlarq24qyi6g76smw7ggvcdtxmahc5yjmri app.bsky.…
-#>  4 create bafyreiawwsisedoucznomazyva3zhomvhzdloimtdectt7w3wzv3f6oose app.bsky.…
-#>  5 create bafyreibxg7boxn3ekbeyqtl3cjni2ipurld6ri6jeoex56t5iij7z2obgi app.bsky.…
-#>  6 create bafyreic3qe3ag3sbone6aijh6no5bwq2jclfa5gejtcdhcxvlbu7ah3mty app.bsky.…
-#>  7 create bafyreicrfdsrimqc4enhvba55jeuymwu4o24f6z2hynis4qxaujklpi7ai app.bsky.…
-#>  8 create bafyreiawaesfaubvp5s757lpx4tw7rmtzwanco5zwmpg2ffjo2njmd45zm app.bsky.…
-#>  9 create bafyreicc46yccpdsmy3ompsiorbu26fqnhe5no4ryrhxhppc6gklmyrb2e app.bsky.…
-#> 10 create bafyreib7yliu74q37fokcipjjyz3penpeax5i7vyr2kfu76f4rcq3d5nmq app.bsky.…
-#> # ℹ 1,105 more rows
+#>  1 create bafyreibt4woefbrzxnhclqyjuwo4lsbnjjktxvpep43se5u5l45ruy3wwa app.bsky.…
+#>  2 create bafyreiaygudmqw67c4wmrqf22luqlwe7mj55bjli6uwguelzocgzfa3oc4 app.bsky.…
+#>  3 create bafyreieqkkrimkxq7u5udp6giyxfs42jokclya52tk76t5j5uftpjtwzri app.bsky.…
+#>  4 create bafyreiccmp44o76eps44jrptbhv5bbcxnr4sggtzqb4h37fbl46eoxkzhi app.bsky.…
+#>  5 create bafyreiaxqb6eaulgyeam36h3wjf3lw665w7nq7i74c3sk7j67pa6ocaaem app.bsky.…
+#>  6 create bafyreihnljosz6g6xjukslees5iooir6yudxuolpc5jpzrqqc4fxdpsco4 app.bsky.…
+#>  7 create bafyreibkwsgtnd7fgdy5vlot3fz47hefe34awsyt6qdkg63bnflbew72na app.bsky.…
+#>  8 create bafyreiefub5vlhghurhz4c6pdyg2ef4dmwo4fxbb76jmpl32jovxuz3tbm app.bsky.…
+#>  9 create bafyreiefdafsouqavlzd6jonyotnbvbyicguibupv7t7enwfwelpo7bqt4 app.bsky.…
+#> 10 create bafyreidnzlksyvttfcxzeqzyszyxsepnscnmgzzuompqotlchgbyrcl3qi app.bsky.…
+#> # ℹ 981 more rows
 ```

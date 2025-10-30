@@ -8,3 +8,4 @@
 ^\.gitignore$
 ^\.git$
 ^cran-comments\.md$
+^\.github$
