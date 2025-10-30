@@ -1,7 +1,7 @@
 ^libipldr\.Rproj$
 ^\.Rproj\.user$
-^src/\.cargo$
 ^src/rust/target$
+^src/rust/vendor/
 ^LICENSE\.md$
 ^README\.Rmd$
 ^lab/$
@@ -10,6 +10,3 @@
 ^cran-comments\.md$
 ^\.github$
 ^\.vscode$
-^src/rust/vendor$
-^src/Makevars$
-^src/Makevars\.win$

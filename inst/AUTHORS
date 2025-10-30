@@ -1,0 +1,79 @@
+Authors of vendored cargo crates
+ - adler 1.0.2: Jonas Schievink
+ - anyhow 1.0.75: David Tolnay
+ - arrayref 0.3.7: David Roundy
+ - arrayvec 0.7.4: bluss
+ - autocfg 1.1.0: Josh Stone
+ - backtrace 0.3.69: The Rust Project Developers
+ - base-x 0.2.11: Alex R.
+ - blake2b_simd 1.0.2: Jack O'Connor
+ - blake2s_simd 1.0.2: Jack O'Connor
+ - blake3 1.5.0: Jack O'Connor, Samuel Neves
+ - block-buffer 0.10.4: RustCrypto Developers
+ - byteorder 1.5.0: Andrew Gallant
+ - bytes 1.5.0: Carl Lerche, Sean McArthur
+ - cc 1.0.83: Alex Crichton
+ - cfg-if 1.0.0: Alex Crichton
+ - cid 0.10.1: Friedel Ziegelmayer
+ - constant_time_eq 0.3.0: Cesar Eduardo Barros
+ - core2 0.4.0: Brendan Molloy
+ - cpufeatures 0.2.9: RustCrypto Developers
+ - crypto-common 0.1.6: RustCrypto Developers
+ - data-encoding 2.4.0: Julien Cretin
+ - data-encoding-macro 0.1.13: Julien Cretin
+ - data-encoding-macro-internal 0.1.11: Julien Cretin
+ - digest 0.10.7: RustCrypto Developers
+ - extendr-api 0.8.1: andy-thomason, Thomas Down, Mossa Merhi Reimert, Josiah Parry, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov, Michael Milton
+ - extendr-ffi 0.8.1: andy-thomason, Thomas Down, Mossa Merhi Reimert, Josiah Parry, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov, Michael Milton
+ - extendr-macros 0.8.1: andy-thomason, Thomas Down, Mossa Merhi Reimert, Josiah Parry, Claus O. Wilke, Hiroaki Yutani, Ilia A. Kosenkov, Michael Milton
+ - fnv 1.0.7: Alex Crichton
+ - generic-array 0.14.7: Bartłomiej Kamiński, Aaron Trent
+ - iroh-car 0.4.0: dignifiedquire
+ - itoa 1.0.9: David Tolnay
+ - keccak 0.1.4: RustCrypto Developers
+ - libc 0.2.149: The Rust Project Developers
+ - libipld 0.16.0: David Craven
+ - libipld-cbor 0.16.0: David Craven
+ - libipld-cbor-derive 0.16.0: David Craven
+ - libipld-core 0.16.0: David Craven
+ - libipld-json 0.16.0: Irakli Gozalishvili
+ - libipld-macro 0.16.0: David Craven
+ - libipld-pb 0.16.0: David Craven
+ - libipldr 0.1.0: Johannes B. Gruber
+ - log 0.4.20: The Rust Project Developers
+ - memchr 2.6.4: Andrew Gallant, bluss
+ - miniz_oxide 0.7.1: Frommi, oyvindln
+ - multibase 0.9.1: Friedel Ziegelmayer
+ - multihash 0.18.1: dignifiedquire, David Craven, Volker Mische
+ - multihash-derive 0.8.1: David Craven
+ - once_cell 1.21.3: Aleksey Kladov
+ - paste 1.0.15: David Tolnay
+ - pin-utils 0.1.0: Josef Brandl
+ - proc-macro-crate 1.1.3: Bastian Köcher
+ - proc-macro-error 1.0.4: CreepySkeleton
+ - proc-macro-error-attr 1.0.4: CreepySkeleton
+ - proc-macro2 1.0.69: David Tolnay, Alex Crichton
+ - quick-protobuf 0.8.1: Johann Tuffe
+ - quote 1.0.33: David Tolnay
+ - rustc-demangle 0.1.23: Alex Crichton
+ - ryu 1.0.15: David Tolnay
+ - serde 1.0.188: Erick Tryzelaar, David Tolnay
+ - serde_derive 1.0.188: Erick Tryzelaar, David Tolnay
+ - serde_json 1.0.107: Erick Tryzelaar, David Tolnay
+ - sha2 0.10.8: RustCrypto Developers
+ - sha3 0.10.8: RustCrypto Developers
+ - slab 0.4.9: Carl Lerche
+ - syn 1.0.109: David Tolnay
+ - syn 2.0.38: David Tolnay
+ - synstructure 0.12.6: Nika Layzell
+ - thiserror 1.0.49: David Tolnay
+ - thiserror-impl 1.0.49: David Tolnay
+ - tokio 1.33.0: Tokio Contributors
+ - toml 0.5.11: Alex Crichton
+ - typenum 1.17.0: Paho Lurie-Gregg, Andre Bogus
+ - unicode-ident 1.0.12: David Tolnay
+ - unicode-xid 0.2.4: erick.tryzelaar, kwantam, Manish Goregaokar
+ - unsigned-varint 0.7.2: Parity Technologies
+ - version_check 0.9.4: Sergio Benitez
+
+(This file was auto-generated from 'cargo metadata' on 2025-10-30)
