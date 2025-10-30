@@ -4,8 +4,9 @@ Version: 0.0.0.9000
 Authors@R:
     person(given = "Johannes B.",
            family = "Gruber",
-           email = "JohannesB.Gruber@gmail.com",
-           role = c("aut", "cre"))
+           email = "JohannesB.Gruber@gmail.com", 
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-9177-1772"))
 Description: Provides R bindings to decode DAG-CBOR encoded data, CIDs (Content 
     Identifiers), and CAR (Content Addressable aRchive) files using Rust's IPLD 
     library. This is especially useful for working with data from IPFS and AtProto 

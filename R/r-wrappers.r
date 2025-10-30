@@ -62,7 +62,7 @@ decode_dag_cbor_multi <- function(data) {
 #'
 #' @return A list with CID components
 #'
-#' @export
+#' @export decoded character string
 #'
 #' @examples
 #' # Decode a CID:
