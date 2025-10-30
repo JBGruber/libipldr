@@ -1,6 +1,6 @@
 Package: libipldr
 Title: R Bindings to the Rust IPLD Library
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R:
     person(given = "Johannes B.",
            family = "Gruber",
@@ -14,11 +14,12 @@ Description: Provides R bindings to decode DAG-CBOR encoded data, CIDs (Content
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Config/rextendr/version: 0.3.1
-Imports: 
-    methods
+SystemRequirements: Cargo (Rust's package manager), rustc >= 1.84
 Suggests:
+    testthat (>= 3.0.0),
     rextendr (>= 0.2.0),
     httr,
     jsonlite
+Config/testthat/edition: 3

@@ -11,10 +11,8 @@ crate-type = [ 'staticlib' ]
 name = 'libipldr'
 
 [dependencies]
-extendr-api = '*'
+extendr-api = '0.7'
 libipld = { version = "0.16.0", features = ["dag-cbor", "dag-json", "dag-pb", "derive"] }
-pyo3 = { version = "0.19", features = ["anyhow"] }
 anyhow = "1.0.75"
 futures = "0.3"
 iroh-car = "0.4.0"
-

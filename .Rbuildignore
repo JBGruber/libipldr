@@ -1,6 +1,10 @@
 ^libipldr\.Rproj$
 ^\.Rproj\.user$
 ^src/\.cargo$
+^src/rust/target$
 ^LICENSE\.md$
 ^README\.Rmd$
 ^lab/$
+^\.gitignore$
+^\.git$
+^cran-comments\.md$

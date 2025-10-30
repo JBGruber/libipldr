@@ -101,6 +101,7 @@ fn cid_hash_to_robj(cid: &Cid) -> Robj {
     let names = vec!["code", "size", "digest"];
 
     let mut result = List::from_values(values);
+    result.set_names(names).unwrap();
 
     result.into()
 }
@@ -114,6 +115,7 @@ fn cid_to_robj(cid: &Cid) -> Robj {
     let names = vec!["version", "codec", "hash"];
 
     let mut result = List::from_values(values);
+    result.set_names(names).unwrap();
 
     let r_result = result.into_robj();
     r_result
