@@ -1,7 +1,9 @@
 [package]
 name = 'libipldr'
+publish = false
 version = '0.1.0'
 edition = '2021'
+rust-version = '1.65'
 license = "MIT"
 description = "R binding to the Rust IPLD library"
 authors = ["Johannes B. Gruber <johannesb.gruber@gmail.com>"]
@@ -16,3 +18,7 @@ libipld = { version = "0.16.0", features = ["dag-cbor", "dag-json", "dag-pb", "d
 anyhow = "1.0.75"
 futures = "0.3"
 iroh-car = "0.4.0"
+
+[profile.release]
+lto = true
+codegen-units = 1

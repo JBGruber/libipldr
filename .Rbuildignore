@@ -9,3 +9,7 @@
 ^\.git$
 ^cran-comments\.md$
 ^\.github$
+^\.vscode$
+^src/rust/vendor$
+^src/Makevars$
+^src/Makevars\.win$
