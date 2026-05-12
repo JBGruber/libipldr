@@ -17,13 +17,13 @@ package that can stream from the Bluesky firehose.
 
 ## Installation
 
-You can install the development version of libipldr with:
+You can install from CRAN with:
 
 ``` r
 install.packages("libipldr")
 ```
 
-Or install the development version from [GitHub](https://github.com/)
+Or install the development version from [GitHub](https://github.com/) 
 with:
 
 ``` r
