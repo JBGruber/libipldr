@@ -24,4 +24,9 @@ Authors:
   \item Johannes B. Gruber \email{JohannesB.Gruber@gmail.com} (\href{https://orcid.org/0000-0001-9177-1772}{ORCID})
 }
 
+Other contributors:
+\itemize{
+  \item Ilya Siamionau (Author of the original python-libipld Rust implementation) [contributor]
+}
+
 }

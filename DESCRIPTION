@@ -1,12 +1,16 @@
 Package: libipldr
 Title: R Bindings to the Rust IPLD Library
 Version: 0.0.1
-Authors@R:
+Authors@R: c(
     person(given = "Johannes B.",
            family = "Gruber",
-           email = "JohannesB.Gruber@gmail.com", 
+           email = "JohannesB.Gruber@gmail.com",
            role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0001-9177-1772"))
+           comment = c(ORCID = "0000-0001-9177-1772")),
+    person(given = "Ilya",
+           family = "Siamionau",
+           role = "ctb",
+           comment = "Author of the original python-libipld Rust implementation"))
 Description: Provides R bindings to decode DAG-CBOR encoded data, CIDs (Content 
     Identifiers), and CAR (Content Addressable aRchive) files using Rust's IPLD 
     library. This is especially useful for working with data from IPFS and AtProto 
