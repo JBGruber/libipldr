@@ -1,7 +1,2 @@
 #!/bin/sh
-export PATH="$HOME/.cargo/bin:$PATH"
-cd src/rust
-./vendor-update.sh
-
-# Update ../inst/AUTHORS
-${R_HOME}/bin/Rscript vendor-authors.R
+rm -Rf src/rust/vendor src/.cargo

@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/JBGruber/libipldr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JBGruber/libipldr/actions/workflows/R-CMD-check.yaml)
-[![extendr](https://img.shields.io/badge/extendr-^0.8.1-276DC2)](https://extendr.github.io/extendr/extendr_api/)
+[![extendr](https://img.shields.io/badge/extendr-^0.8.1-276DC2)](https://extendr.rs/extendr/extendr_api/)
 <!-- badges: end -->
 
 The goal of libipldr is to make it possible to translate DAG-CBOR encoded data in R.
@@ -28,7 +28,7 @@ This is mostly useful for the [`atrrr`](https://jbgruber.github.io/atrrr/article
 You can install the development version of libipldr with:
 
 ``` r
-install.packages("libipldr)
+install.packages("libipldr")
 ```
 
 Or install the development version from [GitHub](https://github.com/) with:

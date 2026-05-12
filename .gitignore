@@ -5,6 +5,7 @@
 .DS_Store
 .quarto
 lab/
+src/vendor
 src/rust/vendor
 src/Makevars
 src/Makevars.win

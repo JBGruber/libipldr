@@ -7,7 +7,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/JBGruber/libipldr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JBGruber/libipldr/actions/workflows/R-CMD-check.yaml)
-[![extendr](https://img.shields.io/badge/extendr-%5E0.8.1-276DC2)](https://extendr.github.io/extendr/extendr_api/)
+[![extendr](https://img.shields.io/badge/extendr-%5E0.8.1-276DC2)](https://extendr.rs/extendr/extendr_api/)
 <!-- badges: end -->
 
 The goal of libipldr is to make it possible to translate DAG-CBOR
@@ -20,7 +20,7 @@ package that can stream from the Bluesky firehose.
 You can install the development version of libipldr with:
 
 ``` r
-install.packages("libipldr)
+install.packages("libipldr")
 ```
 
 Or install the development version from [GitHub](https://github.com/)
@@ -38,20 +38,20 @@ Decode CID:
 ``` r
 library(libipldr)
 decode_cid("bafyreig7jbijxpn4lfhvnvyuwf5u5jyhd7begxwyiqe7ingwxycjdqjjoa")
-#> [[1]]
+#> $version
 #> [1] 1
 #> 
-#> [[2]]
+#> $codec
 #> [1] 113
 #> 
-#> [[3]]
-#> [[3]][[1]]
+#> $hash
+#> $hash$code
 #> [1] 18
 #> 
-#> [[3]][[2]]
+#> $hash$size
 #> [1] 32
 #> 
-#> [[3]][[3]]
+#> $hash$digest
 #>  [1] df 48 50 9b bd bc 59 4f 56 d7 14 b1 7b 4e a7 07 1f c2 43 5e d8 44 09 f4 34
 #> [26] d6 be 04 91 c1 29 70
 ```
@@ -105,18 +105,18 @@ events_df <- map(results, function(res) {
 }) |>
   bind_rows()
 events_df
-#> # A tibble: 999 × 3
-#>    action cid                                                         path      
-#>    <chr>  <chr>                                                       <chr>     
-#>  1 create bafyreibqrbhfp5rtjuoa7do347nafwbnzbtka4jbwcvvtdlim6du2sbsjm app.bsky.…
-#>  2 create bafyreidbopgyh5y2zdacoru5n4wm5t4xu7vnun7cerem3mbcvc4ifkl3y4 app.bsky.…
-#>  3 create bafyreibjwxhmiobpu5merpc5kxtcdprr4kbvquw6jx3o4vnorfle3tfjqm app.bsky.…
-#>  4 delete <NA>                                                        app.bsky.…
-#>  5 create bafyreiciwsrykshbmjkvhzhtnqh3xvvcbyq3fdza3v6aod4iboq4swjcue app.bsky.…
-#>  6 create bafyreibnabt6s7qo2ranc26xvjgudl3437ugp3qqzrxdkx3fhytwjkgn6q app.bsky.…
-#>  7 create bafyreifc53e3oshbwb7anysozesfe4wqalcrtx2omnwgdswf5brwifltgm app.bsky.…
-#>  8 create bafyreiank2n2rd3y2rdnutvyd3i4xe62ggmuc4cqy7tkyr3kpd73fnit7i app.bsky.…
-#>  9 create bafyreih4hu3vggz2ifhjohrpjaw35ohdhz4thf7rzfa2nbbodrnorc3qse app.bsky.…
-#> 10 create bafyreidku42p2l7etdhfizbr42i5ksliixvcvbtjuvleig4mt5vuss2bdi app.bsky.…
-#> # ℹ 989 more rows
+#> # A tibble: 983 × 4
+#>    action cid                                                        path  prev 
+#>    <chr>  <chr>                                                      <chr> <chr>
+#>  1 create bafyreif2jqr4mgs3ab4d7vh64stmt54q2b5p3ay6vglmmmh4fg6qtuah… app.… <NA> 
+#>  2 create bafyreiai3qhecipgihgmk3jyvbssso6z7czbxp5frozga2vaypgkhvnq… app.… <NA> 
+#>  3 create bafyreiconv43mllioqujwkqsdacjudcleaq7tmzf5x4m6rbkbr3p4w2b… app.… <NA> 
+#>  4 create bafyreibklcbwtxmxtwunjfzjnckeerpx2kau5lteyf66sev5pczthkpd… app.… <NA> 
+#>  5 create bafyreih2wlvbvqww6udd2oattdriydxprqzhed637qton6te2vrvs4d2… app.… <NA> 
+#>  6 create bafyreiczfxgz6qs3y4etx3p2petwlgfvwdsvlfw7dlk4v7otdqbiradd… app.… <NA> 
+#>  7 create bafyreigdqhozfzfzeuhn3y2545mugchoadrmw74c2twldoxyywh63wrl… app.… <NA> 
+#>  8 delete <NA>                                                       app.… bafy…
+#>  9 create bafyreic4h64ytwy6rwjplc6oljawp3zvfdenuh2macinb2kl7g3b6za3… app.… <NA> 
+#> 10 create bafyreigk257ywvssiir26ooqlco35suhnzmxwgpwbio23ejfxgfvhy6e… app.… <NA> 
+#> # ℹ 973 more rows
 ```

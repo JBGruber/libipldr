@@ -9,10 +9,12 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # When you have DAG-CBOR encoded data:
-#' result <- decode_dag_cbor(raw_data)
-#' }
+#' # Decode a simple DAG-CBOR map {"a": "Hello", "b": "World!"}
+#' cbor_data <- as.raw(c(
+#'   0xa2, 0x61, 0x61, 0x65, 0x48, 0x65, 0x6c, 0x6c, 0x6f,
+#'   0x61, 0x62, 0x66, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21
+#' ))
+#' decode_dag_cbor(cbor_data)
 decode_dag_cbor <- function(data) {
   if (!is.raw(data)) {
     stop("Input must be a raw vector")
@@ -38,14 +40,14 @@ decode_dag_cbor <- function(data) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # When you have multiple DAG-CBOR objects in one stream:
-#' results <- decode_dag_cbor_multi(raw_data)
-#' bytes_consumed <- attr(results, "bytes_consumed")
-#'
-#' # Remove processed bytes from buffer for streaming
-#' remaining_buffer <- raw_data[(bytes_consumed + 1):length(raw_data)]
-#' }
+#' # Decode two consecutive DAG-CBOR objects from a single byte stream
+#' cbor_data <- as.raw(c(
+#'   0xa2, 0x61, 0x61, 0x65, 0x48, 0x65, 0x6c, 0x6c, 0x6f,
+#'   0x61, 0x62, 0x66, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21,
+#'   0xa1, 0x61, 0x63, 0x01
+#' ))
+#' results <- decode_dag_cbor_multi(cbor_data)
+#' attr(results, "bytes_consumed")
 decode_dag_cbor_multi <- function(data) {
   if (!is.raw(data)) {
     stop("Input must be a raw vector")

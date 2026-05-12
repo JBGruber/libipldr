@@ -10,24 +10,4 @@
 #' @useDynLib libipldr, .registration = TRUE
 "_PACKAGE"
 
-#' Decode a DAG-CBOR encoded byte vector to an R object
-#' @param data A raw vector containing DAG-CBOR encoded data
-#' @export
-decode_dag_cbor <- function(data) .Call(wrap__decode_dag_cbor, data)
-
-#' Decode multiple DAG-CBOR objects from a byte vector
-#' @param data A raw vector containing multiple DAG-CBOR encoded objects
-#' @export
-decode_dag_cbor_multi <- function(data) .Call(wrap__decode_dag_cbor_multi, data)
-
-#' Decode a CID string to its components
-#' @param cid_str A string containing a CID
-#' @export
-decode_cid <- function(cid_str) .Call(wrap__decode_cid, cid_str)
-
-#' Decode a CAR file byte vector
-#' @param data A raw vector containing a CAR file
-#' @export
-decode_car <- function(data) .Call(wrap__decode_car, data)
-
 # nolint end

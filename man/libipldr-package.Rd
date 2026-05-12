@@ -8,7 +8,20 @@
 \description{
 Provides R bindings to decode DAG-CBOR encoded data, CIDs (Content Identifiers), and CAR (Content Addressable aRchive) files using Rust's IPLD library. This is especially useful for working with data from IPFS and AtProto (Bluesky) applications.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/JBGruber/libipldr}
+  \item Report bugs at \url{https://github.com/JBGruber/libipldr/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Johannes B. Gruber \email{JohannesB.Gruber@gmail.com} (\href{https://orcid.org/0000-0001-9177-1772}{ORCID})
+
+Authors:
+\itemize{
+  \item Johannes B. Gruber \email{JohannesB.Gruber@gmail.com} (\href{https://orcid.org/0000-0001-9177-1772}{ORCID})
+}
 
 }
