@@ -4,9 +4,9 @@
 \name{libipldr-package}
 \alias{libipldr}
 \alias{libipldr-package}
-\title{libipldr: R Bindings to the Rust IPLD Library}
+\title{libipldr: R Bindings to the 'Rust' 'IPLD' Library}
 \description{
-Provides R bindings to decode DAG-CBOR encoded data, CIDs (Content Identifiers), and CAR (Content Addressable aRchive) files using Rust's IPLD library. This is especially useful for working with data from IPFS and AtProto (Bluesky) applications.
+Provides R bindings to decode DAG-CBOR (Directed Acyclic Graph Concise Binary Object Representation) encoded data, CIDs (Content Identifiers), and CAR (Content Addressable aRchive) files using the 'Rust' 'IPLD' (InterPlanetary Linked Data) library \url{https://github.com/ipld/libipld}. This is especially useful for working with data from 'IPFS' (InterPlanetary File System) and 'AtProto' (Bluesky) applications.
 }
 \seealso{
 Useful links:

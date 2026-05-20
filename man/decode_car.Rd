@@ -16,8 +16,7 @@ A list with header information and decoded blocks
 This function decodes a CAR file from a raw vector, extracting the header and blocks.
 }
 \examples{
-\dontrun{
-# When you have a CAR file as raw data:
-car_data <- decode_car(raw_car_data)
-}
+car_file <- system.file("extdata", "sample.car", package = "libipldr")
+car_data <- readBin(car_file, what = "raw", n = file.size(car_file))
+decode_car(car_data)
 }

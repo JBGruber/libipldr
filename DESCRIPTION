@@ -1,6 +1,6 @@
 Package: libipldr
-Title: R Bindings to the Rust IPLD Library
-Version: 0.1.0
+Title: R Bindings to the 'Rust' 'IPLD' Library
+Version: 0.1.1
 Authors@R: c(
     person(given = "Johannes B.",
            family = "Gruber",
@@ -11,10 +11,12 @@ Authors@R: c(
            family = "Siamionau",
            role = "ctb",
            comment = "Author of the original python-libipld Rust implementation"))
-Description: Provides R bindings to decode DAG-CBOR encoded data, CIDs (Content 
-    Identifiers), and CAR (Content Addressable aRchive) files using Rust's IPLD 
-    library. This is especially useful for working with data from IPFS and AtProto 
-    (Bluesky) applications.
+Description: Provides R bindings to decode DAG-CBOR (Directed Acyclic Graph
+    Concise Binary Object Representation) encoded data, CIDs (Content Identifiers),
+    and CAR (Content Addressable aRchive) files using the 'Rust' 'IPLD'
+    (InterPlanetary Linked Data) library <https://github.com/ipld/libipld>.
+    This is especially useful for working with data from 'IPFS'
+    (InterPlanetary File System) and 'AtProto' (Bluesky) applications.
 License: MIT + file LICENSE
 URL: https://github.com/JBGruber/libipldr
 BugReports: https://github.com/JBGruber/libipldr/issues
@@ -26,8 +28,10 @@ Suggests:
     testthat (>= 3.0.0),
     rextendr (>= 0.2.0),
     httr2,
-    jsonlite
+    jsonlite,
+    spelling
 Config/testthat/edition: 3
 Depends: 
     R (>= 4.2)
 Config/roxygen2/version: 8.0.0
+Language: en-US
