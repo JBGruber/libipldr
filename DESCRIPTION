@@ -1,6 +1,6 @@
 Package: libipldr
 Title: R Bindings to the 'Rust' 'IPLD' Library
-Version: 0.1.1
+Version: 0.1.1.9000
 Authors@R: c(
     person(given = "Johannes B.",
            family = "Gruber",
