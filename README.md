@@ -8,6 +8,7 @@
 
 [![R-CMD-check](https://github.com/JBGruber/libipldr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JBGruber/libipldr/actions/workflows/R-CMD-check.yaml)
 [![extendr](https://img.shields.io/badge/extendr-%5E0.8.1-276DC2)](https://extendr.rs/extendr/extendr_api/)
+[![CRAN_Download_Badge](https://cranlogs.r-pkg.org/badges/grand-total/libipldr)](https://cran.r-project.org/package=libipldr)
 <!-- badges: end -->
 
 The goal of libipldr is to make it possible to translate DAG-CBOR

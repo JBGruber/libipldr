@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/JBGruber/libipldr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JBGruber/libipldr/actions/workflows/R-CMD-check.yaml)
 [![extendr](https://img.shields.io/badge/extendr-^0.8.1-276DC2)](https://extendr.rs/extendr/extendr_api/)
+[![CRAN_Download_Badge](https://cranlogs.r-pkg.org/badges/grand-total/libipldr)](https://cran.r-project.org/package=libipldr)
 <!-- badges: end -->
 
 The goal of libipldr is to make it possible to translate DAG-CBOR encoded data in R.
@@ -51,7 +52,24 @@ Decode DAG-CBOR:
 
 ```{r}
 cbor_data <- as.raw(c(
-  0xa2, 0x61, 0x61, 0x65, 0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x61, 0x62,  0x66, 0x57, 0x6f, 0x72, 0x6c, 0x64, 0x21
+  0xa2,
+  0x61,
+  0x61,
+  0x65,
+  0x48,
+  0x65,
+  0x6c,
+  0x6c,
+  0x6f,
+  0x61,
+  0x62,
+  0x66,
+  0x57,
+  0x6f,
+  0x72,
+  0x6c,
+  0x64,
+  0x21
 ))
 decode_dag_cbor(cbor_data)
 ```
@@ -63,7 +81,9 @@ Mainly I wanted to have this to decode the firehose stream from Bluesky:
 ```{r}
 library(httr2)
 # open connection to firehose
-firehose <- request("wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos") |>
+firehose <- request(
+  "wss://bsky.network/xrpc/com.atproto.sync.subscribeRepos"
+) |>
   req_perform_connection()
 
 # stream 5 Mb
