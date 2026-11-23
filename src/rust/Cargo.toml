@@ -3,7 +3,7 @@ name = 'libipldr'
 publish = false
 version = '0.1.0'
 edition = '2021'
-rust-version = '1.65'
+rust-version = '1.81'
 license = "MIT"
 description = "R binding to the Rust IPLD library"
 authors = ["Johannes B. Gruber <johannesb.gruber@gmail.com>"]
@@ -14,10 +14,9 @@ name = 'libipldr'
 
 [dependencies]
 extendr-api = '0.8.2'
-libipld = { version = "0.16.0", features = ["dag-cbor", "dag-json", "dag-pb", "derive"] }
+ipld-core = "0.4"
+serde_ipld_dagcbor = { version = "0.7", features = ["less-strict-decoding"] }
 anyhow = "1.0.75"
-futures = "0.3"
-iroh-car = "0.4.0"
 
 [profile.release]
 lto = true
